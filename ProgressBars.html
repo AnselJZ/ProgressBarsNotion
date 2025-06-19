@@ -74,7 +74,7 @@
         <div class="progress-bar">
         <div id="cuat-progress" class="progress"></div>
         </div>
-        <div class="label">Cuatrimester: <span id="cuatri-percent"></span>%</div>
+        <div class="label"><span id="cuatri-name"></span>: <span id="cuatri-percent"></span>%</div>
     </div>
 
     <div class="progress-container">
@@ -86,6 +86,14 @@
   </div>
 
   <script>
+    // Cuatrimester dates
+    const summerStart = new Date("2025-06-06");
+    const firstcuatriStart = new Date("2025-09-06");
+    const firstcuatriEnd = new Date("2025-12-20");
+    const secondcuatriStart = new Date("2026-01-30");
+    const secondcuatriEnd = new Date("2026-05-31");
+    const finalexamsEnd = new Date("2026-06-30");
+
     // Helper function to set the progress
     function updateProgressBar(progressId, percentId, percent) {
       document.getElementById(progressId).style.width = percent + '%';
@@ -133,23 +141,29 @@
     // Calculate cuatrimester progress
     function calculateCuatrimesterProgress() {
       const now = new Date();
+      const cuatriName = document.getElementById("cuatri-name");
       
-      // Customize these dates to match your academic calendar
-      // For demonstration, assume three cuatrimesters:
-      //   - Jan to April
-      //   - May to August
-      //   - September to December
       let start, end;
-      const month = now.getMonth(); // 0-11
-      if (month < 4) { // January - April
-        start = new Date(now.getFullYear(), 0, 1);
-        end = new Date(now.getFullYear(), 4, 1);
-      } else if (month < 8) { // May - August
-        start = new Date(now.getFullYear(), 4, 1);
-        end = new Date(now.getFullYear(), 8, 1);
-      } else { // September - December
-        start = new Date(now.getFullYear(), 8, 1);
-        end = new Date(now.getFullYear() + 1, 0, 1);
+      if (now < firstcuatriStart){
+        start = summerStart;
+        end = firstcuatriStart;
+        cuatriName.textContent = "Summer";
+      } else if (now < firstcuatriEnd){
+        start = firstcuatriStart;
+        end = firstcuatriEnd;
+        cuatriName.textContent = "1st C.";
+      } else if (now < secondcuatriStart){
+        start = firstcuatriEnd;
+        end = secondcuatriStart;
+        cuatriName.textContent = "1st C. Exams";
+      } else if (now < secondcuatriEnd){
+        start = secondcuatriStart;
+        end = secondcuatriEnd;
+        cuatriName.textContent = "2nd C.";
+      } else if (now < finalexamsEnd){
+        start = secondcuatriEnd;
+        end = finalexamsEnd;
+        cuatriName.textContent = "2nd C. Exams";
       }
 
       const total = end - start;
