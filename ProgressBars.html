@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Progress Bars</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Libre Baskerville";
+    }
+    body {
+      background-color: #191919;
+    }
+    .bars-container {
+      padding: 20px;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 3vh;
+    }
+    .progress-container {
+      display: flex;
+      align-items: center;
+      justify-content: left;
+      width: 50vw;
+      gap: 2vw;
+    }
+    .label {
+      font-size: 1.5vw;
+      font-weight: bold;
+      color: #ff86e3;
+      width: auto;
+    }
+    .progress-bar {
+      height: 4vh;
+      width: 30vw;
+      border: 2px solid #ff86e3;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: left;
+    }
+    .progress {
+      background-color: #ff86e3;
+      text-align: right;
+      height: 2.5vh;
+      border-radius: 3px;
+      margin: 0.75vh;
+    }
+  </style>
+</head>
+<body>
+  <div class="bars-container">
+    <div class="progress-container">
+        <div class="progress-bar">
+        <div id="week-progress" class="progress"></div>
+        </div>
+        <div class="label">Week: <span id="week-percent"></span>%</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+        <div id="month-progress" class="progress"></div>
+        </div>
+        <div class="label">Month: <span id="month-percent"></span>%</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+        <div id="cuat-progress" class="progress"></div>
+        </div>
+        <div class="label">Cuatrimester: <span id="cuatri-percent"></span>%</div>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+        <div id="year-progress" class="progress"></div>
+        </div>
+        <div class="label">Year: <span id="year-percent"></span>%</div>
+    </div>
+  </div>
+
+  <script>
+    // Helper function to set the progress
+    function updateProgressBar(progressId, percentId, percent) {
+      document.getElementById(progressId).style.width = percent + '%';
+      document.getElementById(percentId).textContent = Math.floor(percent);
+    }
+
+    // Calculate week progress (assuming week starts on Monday)
+    function calculateWeekProgress() {
+      const now = new Date();
+      let day = now.getDay(); // 0 (Sun) to 6 (Sat)
+      // Adjust so Monday is 0
+      day = day === 0 ? 6 : day - 1;
+      const start = new Date(now);
+      start.setHours(0,0,0,0);
+      start.setDate(now.getDate() - day);
+      
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      
+      const total = end - start; // milliseconds
+      const passed = now - start;
+      return (passed / total) * 100;
+    }
+
+    // Calculate month progress
+    function calculateMonthProgress() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), now.getMonth(), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const total = end - start;
+      const passed = now - start;
+      return (passed / total) * 100;
+    }
+
+    // Calculate yearly progress
+    function calculateYearProgress() {
+      const now = new Date();
+      const start = new Date(now.getFullYear(), 0, 1);
+      const end = new Date(now.getFullYear() + 1, 0, 1);
+      const total = end - start;
+      const passed = now - start;
+      return (passed / total) * 100;
+    }
+
+    // Calculate cuatrimester progress
+    function calculateCuatrimesterProgress() {
+      const now = new Date();
+      
+      // Customize these dates to match your academic calendar
+      // For demonstration, assume three cuatrimesters:
+      //   - Jan to April
+      //   - May to August
+      //   - September to December
+      let start, end;
+      const month = now.getMonth(); // 0-11
+      if (month < 4) { // January - April
+        start = new Date(now.getFullYear(), 0, 1);
+        end = new Date(now.getFullYear(), 4, 1);
+      } else if (month < 8) { // May - August
+        start = new Date(now.getFullYear(), 4, 1);
+        end = new Date(now.getFullYear(), 8, 1);
+      } else { // September - December
+        start = new Date(now.getFullYear(), 8, 1);
+        end = new Date(now.getFullYear() + 1, 0, 1);
+      }
+
+      const total = end - start;
+      const passed = now - start;
+      return (passed / total) * 100;
+    }
+
+    // Update all progress bars
+    function updateAllProgress() {
+      const weekProgress = calculateWeekProgress();
+      updateProgressBar("week-progress", "week-percent", weekProgress);
+
+      const monthProgress = calculateMonthProgress();
+      updateProgressBar("month-progress", "month-percent", monthProgress);
+
+      const yearProgress = calculateYearProgress();
+      updateProgressBar("year-progress", "year-percent", yearProgress);
+
+      const cuatriProgress = calculateCuatrimesterProgress();
+      updateProgressBar("cuat-progress", "cuatri-percent", cuatriProgress);
+    }
+
+    updateAllProgress();
+    // Optionally update every minute
+    setInterval(updateAllProgress, 60000);
+  </script>
+</body>
+</html>
